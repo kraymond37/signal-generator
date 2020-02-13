@@ -31,11 +31,11 @@ func main() {
 	}
 	fmt.Println("start monitor")
 
-	//time.Sleep(5 * time.Second)
+	//time.Sleep(10 * time.Second)
 	//sendTradeSignalToFollower()
 }
 
-func startUpService() *machinery.Server{
+func startUpService() *machinery.Server {
 	cfg, err := config.NewFromYaml("robot.yaml", true)
 	if err != nil {
 		fmt.Println(cfg, err)
@@ -52,21 +52,17 @@ func startUpService() *machinery.Server{
 }
 
 func startTradeMonitor() error {
+	// target_account的apiKey
+	apiKey := "t23Ip429l684kYF39BVCDR-d"
+	secretKey := "SjuKQGn3DsQ4tzn4OvSLCcUKMrA-Hoe4Qi61WzLQaq_PlXxd"
+	endpoint := "testnet.bitmex.com"
 	targetInfo := map[string]interface{}{
 		"target_account": "target",
-		"follow_account": "follow",
 		"exchange":       "bitmex",
-		"contracts": []map[string]interface{}{
-			{
-				"symbol":              "XBTUSD",
-				"follow_position_max": int64(1),
-				"follow_position_min": int64(1),
-				"follow_rate":         1.0,
-			},
-		},
-		"endpoint":   "testnet.bitmex.com",
-		"api_key":    "cihb_hjaTRycwJ9ML4UEIGgR",
-		"secret_key": "ZTbKCf47aftV6PvoX7QFvU1EX6wsdzsAc7L-_K-JjHrIrxwv",
+		"symbols":        []string{"XBTUSD"},
+		"endpoint":       endpoint,
+		"api_key":        apiKey,
+		"secret_key":     secretKey,
 	}
 
 	data, err := json.Marshal(targetInfo)
@@ -102,7 +98,7 @@ func startTradeFollower() error {
 		"contracts": []map[string]interface{}{
 			{
 				"symbol":              "XBTUSD",
-				"follow_position_max": int64(10),
+				"follow_position_max": int64(1000),
 				"follow_position_min": int64(1),
 				"follow_rate":         1.0,
 			},
@@ -138,12 +134,12 @@ func startTradeFollower() error {
 
 func sendTradeSignalToFollower() {
 	params := map[string]interface{}{
-		"symbol": "XBTUSD",
-		"side": "Buy",
-		"amount": int64(1),
-		"timestamp": time.Now().Unix(),
+		"symbol":         "XBTUSD",
+		"side":           "Buy",
+		"amount":         int64(1),
+		"timestamp":      time.Now().Unix(),
 		"target_account": "target",
-		"exchange": "bitmex",
+		"exchange":       "bitmex",
 	}
 	signal, _ := json.Marshal(params)
 
