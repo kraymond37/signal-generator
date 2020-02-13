@@ -78,6 +78,7 @@ func startTradeMonitor() error {
 				Value: data,
 			},
 		},
+		RoutingKey: "quantized-sponsor",
 	}
 
 	span, ctx := opentracing.StartSpanFromContext(context.Background(), "send")
@@ -122,6 +123,7 @@ func startTradeFollower() error {
 				Value: data,
 			},
 		},
+		RoutingKey: "quantized-follower",
 	}
 	span, ctx := opentracing.StartSpanFromContext(context.Background(), "send")
 	defer span.Finish()
@@ -151,6 +153,7 @@ func sendTradeSignalToFollower() {
 				Value: signal,
 			},
 		},
+		RoutingKey: "quantized-follower",
 	}
 	span, ctx := opentracing.StartSpanFromContext(context.Background(), "send")
 	defer span.Finish()
