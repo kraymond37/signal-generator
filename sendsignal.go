@@ -26,12 +26,11 @@ func main() {
 	}
 	fmt.Println("start follower")
 
-	if err := startTradeMonitor(); err != nil {
-		return
-	}
-	fmt.Println("start monitor")
+	//if err := startTradeMonitor(); err != nil {
+	//	return
+	//}
+	//fmt.Println("start monitor")
 
-	//time.Sleep(10 * time.Second)
 	//sendTradeSignalToFollower()
 }
 
@@ -60,8 +59,8 @@ func startTradeMonitor() error {
 		"target_account": "target",
 		"exchange":       "bitmex",
 		"symbols":        []string{"XBTUSD"},
-		"endpoint":       endpoint,
-		"api_key":        apiKey,
+		"base_host":      endpoint,
+		"access_key":     apiKey,
 		"secret_key":     secretKey,
 	}
 
@@ -98,15 +97,24 @@ func startTradeFollower() error {
 		"exchange":       "bitmex",
 		"contracts": []map[string]interface{}{
 			{
-				"symbol":              "XBTUSD",
-				"follow_position_max": int64(1000),
-				"follow_position_min": int64(1),
-				"follow_rate":         1.0,
+				"id":             "83",
+				"task_title":     "hi",
+				"contract":       "XBTUSD",
+				"buy_limit_max":  "1000",
+				"buy_limit_min":  "1",
+				"sell_limit_max": "-1000",
+				"sell_limit_min": "-1",
+				"price_offset":   "1.0",
+				"cancel_time":    "5000",
+				"follow_rate":    "1.0",
 			},
 		},
-		"endpoint":   "testnet.bitmex.com",
-		"api_key":    "cihb_hjaTRycwJ9ML4UEIGgR",
-		"secret_key": "ZTbKCf47aftV6PvoX7QFvU1EX6wsdzsAc7L-_K-JjHrIrxwv",
+		"base_host":         "testnet.bitmex.com",
+		"ws_host":           "testnet.bitmex.com",
+		"access_key":        "cihb_hjaTRycwJ9ML4UEIGgR",
+		"secret_key":        "ZTbKCf47aftV6PvoX7QFvU1EX6wsdzsAc7L-_K-JjHrIrxwv",
+		"target_access_key": "t23Ip429l684kYF39BVCDR-d",
+		"target_secret_key": "SjuKQGn3DsQ4tzn4OvSLCcUKMrA-Hoe4Qi61WzLQaq_PlXxd",
 	}
 	followInfos := []map[string]interface{}{followerInfo}
 
@@ -136,12 +144,18 @@ func startTradeFollower() error {
 
 func sendTradeSignalToFollower() {
 	params := map[string]interface{}{
-		"symbol":         "XBTUSD",
-		"side":           "Buy",
-		"amount":         int64(1),
-		"timestamp":      time.Now().Unix(),
-		"target_account": "target",
-		"exchange":       "bitmex",
+		"symbol":              "XBTUSD",
+		"side":                "Buy",
+		"amount":              int64(1),
+		"timestamp":           time.Now().Unix(),
+		"target_account":      "target",
+		"exchange":            "bitmex",
+		"order_id":            "123123123",
+		"order_status":        "Filled",
+		"order_amount":        int64(10),
+		"order_filled_amount": int64(10),
+		"order_time":          time.Now(),
+		"order_price":         123.456,
 	}
 	signal, _ := json.Marshal(params)
 
