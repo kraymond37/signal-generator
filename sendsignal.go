@@ -114,6 +114,10 @@ func startTradeFollower() error {
 		"secret_key":        "15buQgLJDoCaSmXLA9TxZey-9f3S1ybqbbeIj09VGDcBkm55",
 		"target_access_key": "9U870JJgfMDFo2Vip6xqlIUg",
 		"target_secret_key": "9sTMUVJv2KeLkA1FkYHa3q8t7K3Sfn_FgM6iHCCT-NCIYLcN",
+		"ding": map[string]interface{}{
+			"ding":  "",
+			"phone": "",
+		},
 	}
 	followInfos := []map[string]interface{}{followerInfo}
 
