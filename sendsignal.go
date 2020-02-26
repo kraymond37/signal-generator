@@ -51,17 +51,15 @@ func startUpService() *machinery.Server {
 }
 
 func startTradeMonitor() error {
-	// target_account的apiKey
-	apiKey := "t23Ip429l684kYF39BVCDR-d"
-	secretKey := "SjuKQGn3DsQ4tzn4OvSLCcUKMrA-Hoe4Qi61WzLQaq_PlXxd"
-	endpoint := "testnet.bitmex.com"
 	targetInfo := map[string]interface{}{
 		"target_account": "target",
+		"follow_account": "follow",
 		"exchange":       "bitmex",
-		"symbols":        []string{"XBTUSD"},
-		"base_host":      endpoint,
-		"access_key":     apiKey,
-		"secret_key":     secretKey,
+		"base_host":      "testnet.bitmex.com",
+		"ws_host":        "testnet.bitmex.com",
+		"access_key":     "F8vOWWaSt2olHd8rUNGnt1gQ",
+		"secret_key":     "15buQgLJDoCaSmXLA9TxZey-9f3S1ybqbbeIj09VGDcBkm55",
+		"symbols":        []interface{}{"XBTUSD"},
 	}
 
 	data, err := json.Marshal(targetInfo)
@@ -92,6 +90,7 @@ func startTradeMonitor() error {
 
 func startTradeFollower() error {
 	followerInfo := map[string]interface{}{
+		"task_title":     "hi",
 		"target_account": "target",
 		"follow_account": "follow",
 		"exchange":       "bitmex",
@@ -100,21 +99,21 @@ func startTradeFollower() error {
 				"id":             "83",
 				"task_title":     "hi",
 				"contract":       "XBTUSD",
-				"buy_limit_max":  "1000",
-				"buy_limit_min":  "1",
-				"sell_limit_max": "-1000",
-				"sell_limit_min": "-1",
-				"price_offset":   "1.0",
+				"buy_limit_max":  "10",
+				"buy_limit_min":  "0",
+				"sell_limit_max": "10",
+				"sell_limit_min": "0",
+				"price_offset":   "2",
 				"cancel_time":    "5000",
 				"follow_rate":    "1.0",
 			},
 		},
 		"base_host":         "testnet.bitmex.com",
 		"ws_host":           "testnet.bitmex.com",
-		"access_key":        "cihb_hjaTRycwJ9ML4UEIGgR",
-		"secret_key":        "ZTbKCf47aftV6PvoX7QFvU1EX6wsdzsAc7L-_K-JjHrIrxwv",
-		"target_access_key": "t23Ip429l684kYF39BVCDR-d",
-		"target_secret_key": "SjuKQGn3DsQ4tzn4OvSLCcUKMrA-Hoe4Qi61WzLQaq_PlXxd",
+		"access_key":        "F8vOWWaSt2olHd8rUNGnt1gQ",
+		"secret_key":        "15buQgLJDoCaSmXLA9TxZey-9f3S1ybqbbeIj09VGDcBkm55",
+		"target_access_key": "9U870JJgfMDFo2Vip6xqlIUg",
+		"target_secret_key": "9sTMUVJv2KeLkA1FkYHa3q8t7K3Sfn_FgM6iHCCT-NCIYLcN",
 	}
 	followInfos := []map[string]interface{}{followerInfo}
 
@@ -150,12 +149,12 @@ func sendTradeSignalToFollower() {
 		"timestamp":           time.Now().Unix(),
 		"target_account":      "target",
 		"exchange":            "bitmex",
-		"order_id":            "123123123",
+		"order_id":            "6868686868",
 		"order_status":        "Filled",
 		"order_amount":        int64(10),
 		"order_filled_amount": int64(10),
 		"order_time":          time.Now(),
-		"order_price":         123.456,
+		"order_avg_price":     123.456,
 	}
 	signal, _ := json.Marshal(params)
 
