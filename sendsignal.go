@@ -27,6 +27,12 @@ func main() {
 	//}
 	//fmt.Println("start follower")
 
+	//if err := stopTradeFollower(); err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+	//fmt.Println("start follower")
+
 	//if err := startTradeMonitor(); err != nil {
 	//	return
 	//}
@@ -135,6 +141,38 @@ func startTradeFollower() error {
 
 	var startFollower = tasks.Signature{
 		Name: "startTradeFollower",
+		Args: []tasks.Arg{
+			{
+				Type:  "[]byte",
+				Value: data,
+			},
+		},
+		RoutingKey: "quantized-follower",
+	}
+	span, ctx := opentracing.StartSpanFromContext(context.Background(), "send")
+	defer span.Finish()
+
+	batchID := uuid.New().String()
+	span.SetBaggageItem("batch.id", batchID)
+	span.LogFields(opentracinglog.String("batch.id", batchID))
+	return sendTask(ctx, startFollower)
+}
+
+func stopTradeFollower() error {
+	followerInfo := map[string]interface{}{
+		"target_account": "bm3",
+		"follow_account": "bm5",
+		"exchange":       "bitmex",
+	}
+	followInfos := []map[string]interface{}{followerInfo}
+
+	data, err := json.Marshal(followInfos)
+	if err != nil {
+		return err
+	}
+
+	var startFollower = tasks.Signature{
+		Name: "stopTradeFollower",
 		Args: []tasks.Arg{
 			{
 				Type:  "[]byte",
