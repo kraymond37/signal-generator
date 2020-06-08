@@ -22,11 +22,11 @@ func main() {
 	}
 	fmt.Println("start service")
 
-	//if err := startTradeFollower(); err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
-	//fmt.Println("start follower")
+	if err := startTradeFollower(); err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("start follower")
 
 	//if err := stopTradeFollower(); err != nil {
 	//	fmt.Println(err)
@@ -79,12 +79,12 @@ func getBitmexTargetAccount() map[string]interface{} {
 
 func getOkexTargetAccount() map[string]interface{} {
 	okexInfo := map[string]interface{}{
-		"target_account": "csk",
+		"target_account": "gmail",
 		"exchange":       "okex-test",
 		"base_host":      "https://testnet.okex.com",
 		"ws_host":        "wss://real.okex.com:8443/ws/v3?brokerId=181",
-		"access_key":     "27ad80b0-4a1c-40c5-a24d-dc2140990c2a",
-		"secret_key":     "9415A393A5A679E400FB0978168F4AE1",
+		"access_key":     "1e15fdcf-ffc5-4049-9dcf-6ab41f9fbf30",
+		"secret_key":     "D3D127FE72CF764A1FE689CA0616B99F",
 		"passphrase":     "123456",
 		"symbols":        []interface{}{"TBTC-USD-200612"},
 		"ding": map[string]interface{}{
@@ -96,7 +96,7 @@ func getOkexTargetAccount() map[string]interface{} {
 }
 
 func startTradeMonitor() error {
-	data, err := json.Marshal(getBitmexTargetAccount())
+	data, err := json.Marshal(getOkexTargetAccount())
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func startTradeMonitor() error {
 }
 
 func startTradeFollower() error {
-	followInfos := []map[string]interface{}{getOkexFollowerInfo(), getBm4FollowerInfo()}
+	followInfos := []map[string]interface{}{getOkexFollowerInfo()}
 
 	data, err := json.Marshal(followInfos)
 	if err != nil {
