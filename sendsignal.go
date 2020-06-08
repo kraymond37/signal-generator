@@ -32,14 +32,14 @@ func main() {
 	//	fmt.Println(err)
 	//	return
 	//}
-	//fmt.Println("start follower")
+	//fmt.Println("stop follower")
 
-	//if err := startTradeMonitor(); err != nil {
-	//	fmt.Println(err)
-	//	_ = stopTradeFollower()
-	//	return
-	//}
-	//fmt.Println("start monitor")
+	if err := startTradeMonitor(); err != nil {
+		fmt.Println(err)
+		//_ = stopTradeFollower()
+		return
+	}
+	fmt.Println("start monitor")
 
 	//sendTradeSignalToFollower()
 }
@@ -60,23 +60,43 @@ func startUpService() *machinery.Server {
 	return server
 }
 
-func startTradeMonitor() error {
-	// bm3
-	targetInfo := map[string]interface{}{
+func getBitmexTargetAccount() map[string]interface{} {
+	bitmexInfo := map[string]interface{}{
 		"target_account": "bm3",
-		"exchange":       "bitmex",
-		"base_host":      "testnet.bitmex.com",
-		"ws_host":        "testnet.bitmex.com",
+		"exchange":       "bitmex-test",
+		"base_host":      "https://testnet.bitmex.com",
+		"ws_host":        "wss://testnet.bitmex.com/realtime",
 		"access_key":     "jAwOyiesXELlb-lHi3j3zhkp",
 		"secret_key":     "ydYMBfO0dYcFwDonwGZuwyJ3debrLJMonkL23BNLFZC8mxJZ",
 		"symbols":        []interface{}{"XBTUSD"},
 		"ding": map[string]interface{}{
-			"ding":   "",
-			"phones": "",
+			"ding":   "https://oapi.dingtalk.com/robot/send?access_token=2b23786b0d7661a04c971a2fcde9884c7423fef50c6768e579ba283c7f5d5f1d",
+			"phones": []string{"15988472906"},
 		},
 	}
+	return bitmexInfo
+}
 
-	data, err := json.Marshal(targetInfo)
+func getOkexTargetAccount() map[string]interface{} {
+	okexInfo := map[string]interface{}{
+		"target_account": "csk",
+		"exchange":       "okex-test",
+		"base_host":      "https://testnet.okex.com",
+		"ws_host":        "wss://real.okex.com:8443/ws/v3?brokerId=181",
+		"access_key":     "27ad80b0-4a1c-40c5-a24d-dc2140990c2a",
+		"secret_key":     "9415A393A5A679E400FB0978168F4AE1",
+		"passphrase":     "123456",
+		"symbols":        []interface{}{"TBTC-USD-200612"},
+		"ding": map[string]interface{}{
+			"ding":   "https://oapi.dingtalk.com/robot/send?access_token=2b23786b0d7661a04c971a2fcde9884c7423fef50c6768e579ba283c7f5d5f1d",
+			"phones": []string{"15988472906"},
+		},
+	}
+	return okexInfo
+}
+
+func startTradeMonitor() error {
+	data, err := json.Marshal(getBitmexTargetAccount())
 	if err != nil {
 		return err
 	}
@@ -103,7 +123,7 @@ func startTradeMonitor() error {
 }
 
 func startTradeFollower() error {
-	followInfos := []map[string]interface{}{getBm4FollowerInfo(), getBm5FollowerInfo()}
+	followInfos := []map[string]interface{}{getOkexFollowerInfo(), getBm4FollowerInfo()}
 
 	data, err := json.Marshal(followInfos)
 	if err != nil {
@@ -195,7 +215,7 @@ func getBm5FollowerInfo() map[string]interface{} {
 	followerInfo := map[string]interface{}{
 		"target_account": "bm3",
 		"follow_account": "bm5",
-		"exchange":       "bitmex",
+		"exchange":       "bitmex-test",
 		"contracts": []map[string]interface{}{
 			{
 				"id":             "105",
@@ -229,7 +249,7 @@ func getBm4FollowerInfo() map[string]interface{} {
 	followerInfo := map[string]interface{}{
 		"target_account": "bm3",
 		"follow_account": "bm4",
-		"exchange":       "bitmex",
+		"exchange":       "bitmex-test",
 		"contracts": []map[string]interface{}{
 			{
 				"id":             "104",
@@ -244,8 +264,8 @@ func getBm4FollowerInfo() map[string]interface{} {
 				"follow_rate":    "1.0",
 			},
 		},
-		"base_host":         "testnet.bitmex.com",
-		"ws_host":           "testnet.bitmex.com",
+		"base_host":         "https://testnet.bitmex.com",
+		"ws_host":           "wss://testnet.bitmex.com/realtime",
 		"access_key":        "F8vOWWaSt2olHd8rUNGnt1gQ",
 		"secret_key":        "15buQgLJDoCaSmXLA9TxZey-9f3S1ybqbbeIj09VGDcBkm55",
 		"target_access_key": "jAwOyiesXELlb-lHi3j3zhkp",
@@ -256,6 +276,41 @@ func getBm4FollowerInfo() map[string]interface{} {
 		},
 	}
 
+	return followerInfo
+}
+
+func getOkexFollowerInfo() map[string]interface{} {
+	followerInfo := map[string]interface{}{
+		"target_account": "gmail",
+		"follow_account": "126",
+		"exchange":       "okex-test",
+		"contracts": []map[string]interface{}{
+			{
+				"id":             "1",
+				"task_title":     "test_task",
+				"contract":       "TBTC-USD-200612",
+				"buy_limit_max":  "1000",
+				"buy_limit_min":  "0",
+				"sell_limit_max": "1000",
+				"sell_limit_min": "0",
+				"price_offset":   "2",
+				"cancel_time":    "5",
+				"follow_rate":    "1.0",
+			},
+		},
+		"base_host":         "https://testnet.okex.com",
+		"ws_host":           "wss://real.okex.com:8443/ws/v3?brokerId=181",
+		"access_key":        "27ad80b0-4a1c-40c5-a24d-dc2140990c2a",
+		"secret_key":        "9415A393A5A679E400FB0978168F4AE1",
+		"passphrase":        "123456",
+		"target_access_key": "1e15fdcf-ffc5-4049-9dcf-6ab41f9fbf30",
+		"target_secret_key": "D3D127FE72CF764A1FE689CA0616B99F",
+		"target_passphrase": "123456",
+		"ding": map[string]interface{}{
+			"ding":   "https://oapi.dingtalk.com/robot/send?access_token=2b23786b0d7661a04c971a2fcde9884c7423fef50c6768e579ba283c7f5d5f1d",
+			"phones": []string{"15988472906"},
+		},
+	}
 	return followerInfo
 }
 
